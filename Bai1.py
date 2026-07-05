@@ -44,7 +44,7 @@ class ShipmentCreate(BaseModel):
 
 
 @app.get("/carriers")
-async def get_carriers(
+def get_carriers(
     keyword: Optional[str] = Query(
         None, description="Tìm theo code hoặc name"),
     status: Optional[str] = Query(
@@ -69,7 +69,7 @@ async def get_carriers(
 
 
 @app.get("/carriers/{carrier_id}")
-async def get_carrier_by_id(carrier_id: int):
+def get_carrier_by_id(carrier_id: int):
     for carrier in carriers:
         if carrier["id"] == carrier_id:
             return carrier
@@ -78,7 +78,7 @@ async def get_carrier_by_id(carrier_id: int):
 
 
 @app.post("/carriers", status_code=status.HTTP_201_CREATED)
-async def create_carrier(carrier_data: CarrierCreate):
+def create_carrier(carrier_data: CarrierCreate):
     if any(c["code"].upper() == carrier_data.code.upper() for c in carriers):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail=f"Mã đơn vị vận chuyển đã tồn tại trên hệ thống")
@@ -97,7 +97,7 @@ async def create_carrier(carrier_data: CarrierCreate):
 
 
 @app.put("/carriers/{carrier_id}")
-async def update_carrier(carrier_id: int, carrier_data: CarrierCreate):
+def update_carrier(carrier_id: int, carrier_data: CarrierCreate):
     target_carrier = None
     for c in carriers:
         if c["id"] == carrier_id:
@@ -118,7 +118,7 @@ async def update_carrier(carrier_id: int, carrier_data: CarrierCreate):
 
 
 @app.delete("/carriers/{carrier_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_carrier(carrier_id: int):
+def delete_carrier(carrier_id: int):
     global carriers
     carrier_exists = any(c["id"] == carrier_id for c in carriers)
     if not carrier_exists:
@@ -130,12 +130,12 @@ async def delete_carrier(carrier_id: int):
 
 
 @app.get("/shipments")
-async def get_shipments():
+def get_shipments():
     return shipments
 
 
 @app.post("/shipments", status_code=status.HTTP_201_CREATED)
-async def create_shipment(shipment_data: ShipmentCreate):
+def create_shipment(shipment_data: ShipmentCreate):
     carrier = None
     for c in carriers:
         if c["id"] == shipment_data.carrier_id:
